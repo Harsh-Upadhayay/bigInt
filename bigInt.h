@@ -10,6 +10,7 @@ class bigInt
 
     std :: vector<long long int> number;
     const static int blockSize;
+    bool isNegative;
 
     public:
 

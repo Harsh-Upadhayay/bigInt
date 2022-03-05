@@ -13,8 +13,13 @@ bigInt :: bigInt(string num){
     int pow = 0;
     long long int block = 0, exponent = 1;
     
+    isNegative = (num[0] == '-');
+
     for(int i = num.size()-1; i >= 0; i--){
         
+        if(isNegative && !i)
+            break;
+
         if(pow == blockSize){
             pow = 0;
             exponent = 1;
@@ -34,6 +39,7 @@ bigInt :: bigInt(string num){
 
     for(auto x : number)
         cout<<x<<" ";
+
 }
 
 int main(){
