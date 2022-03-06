@@ -26,7 +26,7 @@ class bigInt
 
     std :: vector<long long int> __add(const std :: vector<long long int> &a, const std :: vector<long long int> &b);
     std :: vector<long long int> __sub(const std :: vector<long long int> &a, const std :: vector<long long int> &b);
-
+    bool __abs_greater(const std :: vector<long long int> &a, const std :: vector<long long int> &b, bool true_if_equal);
     void print();
 
     void operator=(bigInt const &num);

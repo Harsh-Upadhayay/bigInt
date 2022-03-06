@@ -83,11 +83,68 @@ void bigInt :: print(){
     cout<<endl;
 }
 
+bool bigInt :: __abs_greater(const vector<long long int> &a, const vector<long long int> &b, bool true_if_equal = false){
+    
+    if(a.size() != b.size())  
+        return a.size() > b.size();
+    
+    for(int i = 0; i < a.size(); i++)
+        if(a[i] < b[i])
+            return false;
+        else if(b[i] < a[i])
+            return true;
+
+    return true_if_equal;        
+}
+
+vector<long long int> bigInt :: __sub(const vector<long long int> &a, const vector<long long int> &b){
+
+    bool check = __abs_greater(a, b);    
+    const vector<long long int> &greater = check? a : b,
+                                &smaller = !check? a : b;
+
+    vector<long long int> diff;
+    short borrow = 0, i;
+
+    for(i = 0; i < smaller.size(); i++){
+        long long int block_diff = greater[i] - smaller[i] - borrow;
+
+        if(block_diff < 0){
+            block_diff += __exponent;
+            borrow = 1;
+        }
+        else
+            borrow = 0;
+        
+        diff.push_back(block_diff);
+    }
+    
+    while(i < greater.size()){
+        long long int block_diff = greater[i++] - borrow;
+
+        if(block_diff < 0){
+            block_diff += __exponent;
+            borrow = 1;
+        }
+        else
+            borrow = 0;
+        
+        diff.push_back(block_diff);
+    }
+
+    for(int i = diff.size()-1; i >= 0; i--)
+        if(!diff[i])
+            diff.pop_back();
+        else
+            break;
+
+    return diff;
+}
 
 
 int main(){
-    bigInt z, x("1"), y("1");
-    z.number = z.__add(x.number, y.number);
+    bigInt z, x("1000000000"), y("12345678910");
+    z.number = z.__sub(x.number, y.number);
     z.print();
     return 0;
 }
