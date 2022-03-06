@@ -6,8 +6,8 @@
 
 using namespace std;
 
-const int bigInt :: __blockSize = 3;
-const int bigInt :: __exponent = pow(10, bigInt :: __blockSize);
+const int bigInt :: __blockSize = 18;
+const long long int bigInt :: __exponent = pow(10, bigInt :: __blockSize);
 
 bigInt :: bigInt(){
 
@@ -22,9 +22,17 @@ bigInt :: bigInt(string num){
 bigInt :: bigInt(long long int num){
     
     isNegative = (num < 0);
-    number.push_back(abs(num));
+    while(num){
+        number.push_back(num%__exponent);
+        num /= __exponent;
+    }
 }
 
+bigInt :: bigInt(bigInt &num){
+    for(auto x : num.number)
+        number.push_back(x);
+    isNegative = num.isNegative;
+}
 
 vector<long long int> bigInt :: __add(const vector<long long int> &a, const vector<long long int> &b){
     
@@ -52,7 +60,7 @@ vector<long long int> bigInt :: __add(const vector<long long int> &a, const vect
 
 vector<long long int> bigInt :: __sub(const vector<long long int> &a, const vector<long long int> &b){
 
-    bool check = __abs_greater(a, b);    
+    bool check = __abs_greater(a, b, false);    
     const vector<long long int> &greater = check? a : b,
                                 &smaller = !check? a : b;
 
@@ -229,7 +237,10 @@ void bigInt :: operator=(long long int num){
     
     number.clear();
     isNegative = (num < 0);
-    number.push_back(abs(num));
+    while(num){
+        number.push_back(num%__exponent);
+        num /= __exponent;
+    }
 }
 
 void bigInt :: operator=(string num){
@@ -262,6 +273,86 @@ void bigInt :: operator=(string num){
         number.push_back(block);
 }
 
+bool bigInt :: operator>(bigInt const &num){    
+    
+    const vector<long long int> &a = this->number, &b = num.number;
+    __sign sign = get_case(this->isNegative, num.isNegative);
+    bool isGreater;
+
+    switch (sign)
+    {
+    case pp:
+        isGreater = __abs_greater(a, b);
+        break;
+    case pn:
+        isGreater = true;
+        break;
+    case np:
+        isGreater = false;
+        break;
+    case nn:
+        isGreater = __abs_smaller(a, b);
+        break;
+    }
+
+    return isGreater;
+}
+
+bool bigInt :: operator>=(bigInt const &num){    
+    
+    const vector<long long int> &a = this->number, &b = num.number;
+    __sign sign = get_case(this->isNegative, num.isNegative);
+    bool isGreater;
+
+    switch (sign)
+    {
+    case pp:
+        isGreater = __abs_greater(a, b, true);
+        break;
+    case pn:
+        isGreater = true;
+        break;
+    case np:
+        isGreater = false;
+        break;
+    case nn:
+        isGreater = __abs_smaller(a, b, true);
+        break;
+    }
+
+    return isGreater;
+}
+
+bool bigInt :: operator<(bigInt const &num){    
+    
+    return !(*this >= num);
+}
+
+bool bigInt :: operator<=(bigInt const &num){    
+    
+    return !(*this > num);
+}
+
+bool bigInt :: operator==(bigInt const &num){
+    if(number.size() != num.number.size())
+        return false;
+
+    for(int i = 0; i < number.size(); i++)
+        if(number[i] != num.number[i])
+            return false;
+    
+    return (this->isNegative == num.isNegative);
+}
+
+bool bigInt :: operator==(long long int num){
+    bigInt temp(num);
+    return *this == temp;
+}
+
+bool bigInt :: operator==(std :: string const &num){
+    bigInt temp(num);
+    return *this == temp;
+}
 
 ostream &operator<<(ostream &op_stream, const bigInt &bi) {
 
@@ -288,8 +379,9 @@ istream &operator>>(istream &in_stream, bigInt &bi) {
     return in_stream;
 }
 
+
 int main(){
-    bigInt a("9999"), b("-1");
-    cout<<(++a)<<"\n";
+    bigInt a("9999"), b("99999");
+    cout<<(b=="999999")<<"\n";
     return 0;
 }

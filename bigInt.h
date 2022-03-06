@@ -16,7 +16,7 @@ class bigInt
     bool isNegative;
 
     const static int __blockSize;
-    const static int __exponent;
+    const static long long int __exponent;
 
     std :: vector<long long int> __add(const std :: vector<long long int> &a, const std :: vector<long long int> &b);
     std :: vector<long long int> __sub(const std :: vector<long long int> &a, const std :: vector<long long int> &b);
@@ -36,27 +36,14 @@ class bigInt
     bigInt(long long num);
     bigInt(bigInt &num);
 
-    void print();
-
     void operator=(bigInt const &num);
     void operator=(long long int num);
     void operator=(std :: string num);
 
     bool operator>(bigInt const &num);
-    bool operator>(long long int num);
-    bool operator>(std :: string const &num);
-
     bool operator>=(bigInt const &num);
-    bool operator>=(long long int num);
-    bool operator>=(std :: string const &num);
-
     bool operator<(bigInt const &num);
-    bool operator<(long long int num);
-    bool operator<(std :: string const &num);
-
     bool operator<=(bigInt const &num);
-    bool operator<=(long long int num);
-    bool operator<=(std :: string const &num);
 
     bool operator==(bigInt const &num);
     bool operator==(long long int num);
