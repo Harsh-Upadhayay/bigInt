@@ -40,14 +40,14 @@ vector<long long int> bigInt :: __add(const vector<long long int> &a, const vect
     int carry = 0, i;
     
     for(i = 0; i < min(a.size(), b.size()); i++){
-        auto block_sum = carry + a[i] + b[i];
+        long long int block_sum = carry + a[i] + b[i];
         carry = block_sum/__exponent;
         sum.push_back(block_sum % __exponent);
     }
     const vector<long long int> &temp = (a.size() > b.size()) ? a : b;
 
     while(i < temp.size()){
-        auto block_sum = temp[i++] + carry;
+        long long int block_sum = temp[i++] + carry;
         carry = block_sum / __exponent;
         sum.push_back(block_sum % __exponent);
     }
