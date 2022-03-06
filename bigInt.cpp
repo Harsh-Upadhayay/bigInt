@@ -10,41 +10,17 @@ const int bigInt :: __blockSize = 3;
 const int bigInt :: __exponent = pow(10, bigInt :: __blockSize);
 
 bigInt :: bigInt(){
-    number.push_back(0);
+
     isNegative = false;
 }
 
 bigInt :: bigInt(string num){
-    int pow = 0;
-    long long int block = 0, __exponent = 1;
-    
-    isNegative = (num[0] == '-');
 
-    for(int i = num.size()-1; i >= 0; i--){
-        
-        if(isNegative && !i)
-            break;
-
-        if(pow == __blockSize){
-            pow = 0;
-            __exponent = 1;
-
-            number.push_back(block);
-            block = 0;
-        }
-        
-        block += toInt(num[i])*__exponent;
-        pow += 1;
-        __exponent *= 10;
-    
-    }
-    
-    if(block)
-        number.push_back(block);
-
+    *this = num;
 }
 
 bigInt :: bigInt(long long int num){
+    
     isNegative = (num < 0);
     number.push_back(abs(num));
 }
@@ -72,29 +48,6 @@ vector<long long int> bigInt :: __add(const vector<long long int> &a, const vect
         sum.push_back(carry);
     
     return sum;
-}
-
-void bigInt :: print(){
-    cout<<*(number.end()-1);
- 
-    for(int i = number.size()-2; i >= 0; i--)
-        cout<<setw(__blockSize)<<setfill('0')<<number[i];
-    
-    cout<<endl;
-}
-
-bool bigInt :: __abs_greater(const vector<long long int> &a, const vector<long long int> &b, bool true_if_equal = false){
-    
-    if(a.size() != b.size())  
-        return a.size() > b.size();
-    
-    for(int i = 0; i < a.size(); i++)
-        if(a[i] < b[i])
-            return false;
-        else if(b[i] < a[i])
-            return true;
-
-    return true_if_equal;        
 }
 
 vector<long long int> bigInt :: __sub(const vector<long long int> &a, const vector<long long int> &b){
@@ -132,7 +85,7 @@ vector<long long int> bigInt :: __sub(const vector<long long int> &a, const vect
         diff.push_back(block_diff);
     }
 
-    for(int i = diff.size()-1; i >= 0; i--)
+    for(int i = diff.size()-1; i > 0; i--)
         if(!diff[i])
             diff.pop_back();
         else
@@ -141,10 +94,202 @@ vector<long long int> bigInt :: __sub(const vector<long long int> &a, const vect
     return diff;
 }
 
+bool bigInt :: __abs_greater(const vector<long long int> &a, const vector<long long int> &b, bool true_if_equal = false){
+    
+    if(a.size() != b.size())  
+        return a.size() > b.size();
+    
+    for(int i = 0; i < a.size(); i++)
+        if(a[i] < b[i])
+            return false;
+        else if(b[i] < a[i])
+            return true;
+
+    return true_if_equal;        
+}
+
+bool bigInt :: __abs_smaller(const vector<long long int> &a, const vector<long long int> &b, bool true_if_equal = false){
+    
+    if(a.size() != b.size())  
+        return a.size() < b.size();
+    
+    for(int i = 0; i < a.size(); i++)
+        if(a[i] > b[i])
+            return false;
+        else if(b[i] > a[i])
+            return true;
+
+    return true_if_equal;        
+}
+
+__sign bigInt :: get_case(bool a, bool b){
+    if(!a && !b) 
+        return pp;
+    if(!a && b)
+        return pn;
+    if(a && !b)
+        return np;
+    return nn;
+}
+
+
+bigInt bigInt :: operator+(bigInt const &num){
+    
+    const vector<long long int> &a = this->number, &b = num.number;
+    bigInt sum;
+    __sign sign = get_case(this->isNegative, num.isNegative);
+
+    switch (sign)
+    {
+    case pp:
+        sum.number = __add(a, b); 
+        sum.isNegative = false;
+        break;    
+    case pn:
+        sum.number = __sub(a, b);
+        sum.isNegative = !__abs_greater(a, b); 
+        break;  
+    case np:
+        sum.number = __sub(a, b); 
+        sum.isNegative = __abs_greater(a, b);
+        break;  
+    case nn:
+        sum.number = __add(a, b);
+        sum.isNegative = true; 
+        break;
+    }
+
+    return sum;
+}
+
+bigInt bigInt :: operator+(long long int num){
+    bigInt temp(num);
+    temp = *this + temp;
+    return temp;
+}
+
+bigInt bigInt :: operator+(string const &num){
+    bigInt temp(num);
+    temp = *this + temp;
+    return temp;
+}
+
+bigInt bigInt :: operator-(bigInt const &num){
+    
+    const vector<long long int> &a = this->number, &b = num.number;
+    bigInt diff;
+    __sign sign = get_case(this->isNegative, num.isNegative);
+
+    switch (sign)
+    {
+    case pp:
+        diff.number = __sub(a, b); 
+        diff.isNegative = !__abs_greater(a, b);
+        break;    
+    case pn:
+        diff.number = __add(a, b);
+        diff.isNegative = false; 
+        break;  
+    case np:
+        diff.number = __add(a, b); 
+        diff.isNegative = true;
+        break;  
+    case nn:
+        diff.number = __sub(a, b);
+        diff.isNegative = __abs_greater(a, b); 
+        break;
+    }
+
+    return diff;
+}
+
+bigInt bigInt :: operator-(long long int num){
+    bigInt temp(num);
+    temp = *this - temp;
+    return temp;
+}
+
+bigInt bigInt :: operator-(string const &num){
+    bigInt temp(num);
+    temp = *this - temp;
+    return temp;
+}
+
+void bigInt :: operator=(bigInt const &num){
+    
+    this->number.clear();
+
+    for(auto x : num.number)
+        this->number.push_back(x);
+    
+    this->isNegative = num.isNegative;
+}
+
+void bigInt :: operator=(long long int num){
+    
+    number.clear();
+    isNegative = (num < 0);
+    number.push_back(abs(num));
+}
+
+void bigInt :: operator=(string num){
+    
+    int pow = 0;
+    long long int block = 0, __exponent = 1;
+    
+    isNegative = (num[0] == '-');
+
+    for(int i = num.size()-1; i >= 0; i--){
+        
+        if(isNegative && !i)
+            break;
+
+        if(pow == __blockSize){
+            pow = 0;
+            __exponent = 1;
+
+            number.push_back(block);
+            block = 0;
+        }
+        
+        block += toInt(num[i])*__exponent;
+        pow += 1;
+        __exponent *= 10;
+    
+    }
+    
+    if(block)
+        number.push_back(block);
+}
+
+
+ostream &operator<<(ostream &op_stream, const bigInt &bi) {
+
+    if(!bi.number.size())
+        return op_stream << "0";
+
+    if(bi.isNegative)
+        op_stream << "-";
+    
+    op_stream << *(bi.number.end()-1);
+ 
+    for(int i = bi.number.size()-2; i >= 0; i--)
+        op_stream << setw(bi.__blockSize) << setfill('0') << bi.number[i];
+    
+    return op_stream;
+}
+
+istream &operator>>(istream &in_stream, bigInt &bi) {
+    
+    string input;
+    in_stream >> input;
+    // bi = input;
+
+    return in_stream;
+}
 
 int main(){
-    bigInt z, x("1000000000"), y("12345678910");
-    z.number = z.__sub(x.number, y.number);
-    z.print();
+    bigInt a("9999"), b("-1");
+    cout<<(++a)<<"\n";
     return 0;
 }

@@ -5,16 +5,28 @@
 #define toInt(x) (int)(x - '0')
 #define toChar(x) (char)(x + '0')
 
+enum __sign {
+    pp, pn, np, nn
+};
+
 class bigInt
 {
-    public:
 
     std :: vector<long long int> number;
-    const static int __blockSize;
-    const static int __exponent;
     bool isNegative;
 
+    const static int __blockSize;
+    const static int __exponent;
+
+    std :: vector<long long int> __add(const std :: vector<long long int> &a, const std :: vector<long long int> &b);
+    std :: vector<long long int> __sub(const std :: vector<long long int> &a, const std :: vector<long long int> &b);
     
+    bool __abs_greater(const std :: vector<long long int> &a, const std :: vector<long long int> &b, bool true_if_equal);
+    bool __abs_smaller(const std :: vector<long long int> &a, const std :: vector<long long int> &b, bool true_if_equal);
+
+    __sign get_case(bool a, bool b);
+
+    public:
 
     friend std :: ostream &operator<<(std :: ostream &op_stream, const bigInt &bi);
     friend std :: istream &operator>>(std :: istream &in_stream, bigInt &bi);
@@ -24,9 +36,6 @@ class bigInt
     bigInt(long long num);
     bigInt(bigInt &num);
 
-    std :: vector<long long int> __add(const std :: vector<long long int> &a, const std :: vector<long long int> &b);
-    std :: vector<long long int> __sub(const std :: vector<long long int> &a, const std :: vector<long long int> &b);
-    bool __abs_greater(const std :: vector<long long int> &a, const std :: vector<long long int> &b, bool true_if_equal);
     void print();
 
     void operator=(bigInt const &num);
@@ -52,12 +61,6 @@ class bigInt
     bool operator==(bigInt const &num);
     bool operator==(long long int num);
     bool operator==(std :: string const &num);
-
-    bigInt operator++();
-    bigInt operator++(int);
-
-    bigInt operator--();
-    bigInt operator--(int);
 
     bigInt operator-(bigInt const &num);
     bigInt operator-(long long int num);
