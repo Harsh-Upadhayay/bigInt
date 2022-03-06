@@ -9,7 +9,8 @@ class bigInt
 {
 
     std :: vector<long long int> number;
-    const static int blockSize;
+    const static int __blockSize;
+    const static int __exponent;
     bool isNegative;
 
     public:
@@ -21,6 +22,9 @@ class bigInt
     bigInt(std :: string num);
     bigInt(long long num);
     bigInt(bigInt &num);
+
+    vector<long long int> __add(const vector<long long int> &a, const vector<long long int> &b);
+    vector<long long int> __sub(const vector<long long int> &a, const vector<long long int> &b);
 
     void operator=(bigInt const &num);
     void operator=(long long int num);
