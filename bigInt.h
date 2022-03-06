@@ -7,13 +7,14 @@
 
 class bigInt
 {
+    public:
 
     std :: vector<long long int> number;
     const static int __blockSize;
     const static int __exponent;
     bool isNegative;
 
-    public:
+    
 
     friend std :: ostream &operator<<(std :: ostream &op_stream, const bigInt &bi);
     friend std :: istream &operator>>(std :: istream &in_stream, bigInt &bi);
@@ -23,8 +24,10 @@ class bigInt
     bigInt(long long num);
     bigInt(bigInt &num);
 
-    vector<long long int> __add(const vector<long long int> &a, const vector<long long int> &b);
-    vector<long long int> __sub(const vector<long long int> &a, const vector<long long int> &b);
+    std :: vector<long long int> __add(const std :: vector<long long int> &a, const std :: vector<long long int> &b);
+    std :: vector<long long int> __sub(const std :: vector<long long int> &a, const std :: vector<long long int> &b);
+
+    void print();
 
     void operator=(bigInt const &num);
     void operator=(long long int num);

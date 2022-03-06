@@ -1,6 +1,8 @@
 #include <iostream>
 #include <math.h>
+#include <vector>
 #include "bigInt.h"
+#include <iomanip>
 
 using namespace std;
 
@@ -40,9 +42,6 @@ bigInt :: bigInt(string num){
     if(block)
         number.push_back(block);
 
-    for(auto x : number)
-        cout<<x<<" ";
-
 }
 
 bigInt :: bigInt(long long int num){
@@ -71,10 +70,24 @@ vector<long long int> bigInt :: __add(const vector<long long int> &a, const vect
 
     if(carry)
         sum.push_back(carry);
+    
+    return sum;
 }
 
-int main(){
-    bigInt x("123456789");
+void bigInt :: print(){
+    cout<<*(number.end()-1);
+ 
+    for(int i = number.size()-2; i >= 0; i--)
+        cout<<setw(__blockSize)<<setfill('0')<<number[i];
+    
+    cout<<endl;
+}
 
+
+
+int main(){
+    bigInt z, x("1"), y("1");
+    z.number = z.__add(x.number, y.number);
+    z.print();
     return 0;
 }
