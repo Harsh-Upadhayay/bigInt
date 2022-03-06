@@ -379,9 +379,3 @@ istream &operator>>(istream &in_stream, bigInt &bi) {
     return in_stream;
 }
 
-
-int main(){
-    bigInt a("9999"), b("99999");
-    cout<<(b=="999999")<<"\n";
-    return 0;
-}
